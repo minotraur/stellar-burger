@@ -1,9 +1,35 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { TTabMode } from '@utils-types';
+import { TIngredient, TTabMode } from '@utils-types';
+import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+
+import { useDispatch, useSelector } from '../../services/store';
+import { Preloader } from '../ui/preloader';
+import {
+  fetchIngredients,
+  getIngredients,
+  getIsLoading
+} from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
+  const ingredients = useSelector<TIngredient[]>(getIngredients);
+  const isLoading = useSelector<boolean>(getIsLoading);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+
+  const buns: TIngredient[] = ingredients.filter((type) => type.type === 'bun');
+  const mains: TIngredient[] = ingredients.filter(
+    (type) => type.type === 'main'
+  );
+  const sauces: TIngredient[] = ingredients.filter(
+    (type) => type.type === 'sauce'
+  );
+
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
@@ -31,7 +57,6 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
-  /* В можно лучше: скролл к разделу при клике на таб */
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
     if (tab === 'bun')
@@ -42,21 +67,25 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // return (
-  //   <BurgerIngredientsUI
-  //     currentTab={currentTab}
-  //     buns={buns}
-  //     mains={mains}
-  //     sauces={sauces}
-  //     titleBunRef={titleBunRef}
-  //     titleMainRef={titleMainRef}
-  //     titleSaucesRef={titleSaucesRef}
-  //     bunsRef={bunsRef}
-  //     mainsRef={mainsRef}
-  //     saucesRef={saucesRef}
-  //     onTabClick={onTabClick}
-  //   />
-  // );
-
-  return null;
+  return (
+    <>
+      {isLoading ? (
+        <Preloader />
+      ) : (
+        <BurgerIngredientsUI
+          currentTab={currentTab}
+          buns={buns}
+          mains={mains}
+          sauces={sauces}
+          titleBunRef={titleBunRef}
+          titleMainRef={titleMainRef}
+          titleSaucesRef={titleSaucesRef}
+          bunsRef={bunsRef}
+          mainsRef={mainsRef}
+          saucesRef={saucesRef}
+          onTabClick={onTabClick}
+        />
+      )}
+    </>
+  );
 };
