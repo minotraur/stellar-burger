@@ -20,9 +20,6 @@ import {
   ProtectedRoute
 } from '@components';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from '../../services/store';
-import { useEffect } from 'react';
-import { getUserThunk, selectUser } from '../../services/slices/userSlice';
 
 const App = () => {
   const location = useLocation();

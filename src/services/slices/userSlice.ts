@@ -1,110 +1,137 @@
+import { getUserApi, logoutApi, updateUserApi } from '@api';
 import {
-  TLoginData,
-  TRegisterData,
-  getUserApi,
-  loginUserApi,
-  registerUserApi
-} from '@api';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+  PayloadAction,
+  SerializedError,
+  createAsyncThunk,
+  createSlice
+} from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 
-export const registerUserThunk = createAsyncThunk(
-  'users/registerUser',
-  ({ email, name, password }: TRegisterData) =>
-    registerUserApi({ email, name, password })
+export const getUserApiThunk = createAsyncThunk(
+  'user/getUser',
+  async () => await getUserApi()
 );
 
-export const loginUserThunk = createAsyncThunk(
-  'users/loginUser',
-  ({ email, password }: TLoginData) => loginUserApi({ email, password })
+interface IUpdateUserApiParams {
+  email: string;
+  name: string;
+  password: string;
+}
+
+export const updateUserApiThunk = createAsyncThunk(
+  'user/updateUser',
+  async (params: IUpdateUserApiParams) => await updateUserApi({ ...params })
 );
 
-export const getUserThunk = createAsyncThunk('users/getUser', () =>
-  getUserApi()
+export const logoutApiThunk = createAsyncThunk(
+  'user/logout',
+  async () => await logoutApi()
 );
 
-export type TUserState = {
+type TUserState = {
   isLoading: boolean;
-  user: TUser | null;
-  error: string | undefined;
-  accessToken: string | null;
-  refreshToken: string | null;
-  success: boolean;
+  isLogout: boolean;
+  error: SerializedError | null;
+  user: TUser;
 };
 
 const initialState: TUserState = {
   isLoading: false,
-  user: null,
-  error: undefined,
-  accessToken: null,
-  refreshToken: null,
-  success: false
+  isLogout: false,
+  error: null,
+  user: {
+    email: '',
+    name: ''
+  }
 };
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
-  selectors: {
-    selectUser: (state) => {
-      state;
+  reducers: {
+    updateUser: (
+      state,
+      action: PayloadAction<{ name: string; email: string }>
+    ) => {
+      if (state.user) {
+        state.user.name = action.payload.name;
+        state.user.email = action.payload.email;
+      }
     }
   },
+  selectors: {
+    selectUser: (state) => state.user
+  },
   extraReducers: (builder) => {
-    builder.addCase(getUserThunk.pending, (state) => {
+    // Получение пользователя
+    builder.addCase(getUserApiThunk.pending, (state) => {
       state.isLoading = true;
+      state.isLogout = false;
+      state.error = null;
+      state.user = {
+        email: '',
+        name: ''
+      };
     });
-    builder.addCase(getUserThunk.rejected, (state) => {
+    builder.addCase(getUserApiThunk.rejected, (state, action) => {
       state.isLoading = false;
+      state.isLogout = false;
+      state.error = action.error;
+      state.user = {
+        email: '',
+        name: ''
+      };
     });
-    builder.addCase(getUserThunk.fulfilled, (state) => {
+    builder.addCase(getUserApiThunk.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.isLogout = false;
+      state.error = null;
+      state.user = action.payload.user;
     });
 
-    builder.addCase(registerUserThunk.pending, (state) => {
+    // Обновление пользователя
+    builder.addCase(updateUserApiThunk.pending, (state) => {
       state.isLoading = true;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.success = false;
+      state.isLogout = false;
+      state.error = null;
     });
-    builder.addCase(registerUserThunk.rejected, (state, action) => {
+    builder.addCase(updateUserApiThunk.rejected, (state, action) => {
       state.isLoading = false;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.success = false;
-      state.error = action.error.code;
+      state.isLogout = false;
+      state.error = action.error;
     });
-    builder.addCase(registerUserThunk.fulfilled, (state, action) => {
+    builder.addCase(updateUserApiThunk.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      state.success = true;
-      state.error = undefined;
+      state.isLogout = false;
+      state.error = null;
+      state.user!.name = action.payload.user.name;
+      state.user!.email = action.payload.user.email;
     });
 
-    builder.addCase(loginUserThunk.pending, (state) => {
+    //Выход пользователя
+    builder.addCase(logoutApiThunk.pending, (state) => {
       state.isLoading = true;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.success = false;
+      state.isLogout = false;
+      state.error = null;
     });
-    builder.addCase(loginUserThunk.rejected, (state, action) => {
+    builder.addCase(logoutApiThunk.rejected, (state, action) => {
       state.isLoading = false;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.success = false;
-      state.error = action.error.code;
+      state.isLogout = false;
+      state.error = action.error;
     });
-    builder.addCase(loginUserThunk.fulfilled, (state, action) => {
+    builder.addCase(logoutApiThunk.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      state.success = true;
-      state.error = undefined;
+      state.isLogout = true;
+      state.error = null;
+      state.user = {
+        email: '',
+        name: ''
+      };
     });
   }
 });
 
+export const { updateUser } = userSlice.actions;
 export const { selectUser } = userSlice.selectors;
 
 export default userSlice.reducer;
