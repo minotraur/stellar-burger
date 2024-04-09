@@ -105,6 +105,9 @@ const authSlice = createSlice({
       state.isAuthChecked = true;
     }
   },
+  selectors: {
+    isAuthCheckedSelector: (state) => state.isAuthChecked
+  },
   extraReducers: (builder) => {
     // Регистрация
     builder.addCase(registerUserThunk.pending, (state) => {
@@ -213,5 +216,6 @@ const authSlice = createSlice({
 });
 
 export const { authChecked } = authSlice.actions;
+export const { isAuthCheckedSelector } = authSlice.selectors;
 
 export default authSlice.reducer;

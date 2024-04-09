@@ -6,6 +6,7 @@ import {
   createSlice
 } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
+import { deleteCookie } from '../../utils/cookie';
 
 export const getUserApiThunk = createAsyncThunk(
   'user/getUser',
@@ -25,10 +26,19 @@ export const updateUserApiThunk = createAsyncThunk(
 
 export const logoutApiThunk = createAsyncThunk(
   'user/logout',
-  async () => await logoutApi()
+  async () =>
+    await logoutApi()
+      .then(() => {
+        localStorage.clear(); // очищаем refreshToken
+        deleteCookie('accessToken'); // очищаем accessToken
+      })
+      .catch(() => {
+        console.log('Ошибка выполнения выхода');
+      })
 );
 
 type TUserState = {
+  isInit: boolean;
   isLoading: boolean;
   isLogout: boolean;
   error: SerializedError | null;
@@ -36,6 +46,7 @@ type TUserState = {
 };
 
 const initialState: TUserState = {
+  isInit: false,
   isLoading: false,
   isLogout: false,
   error: null,
@@ -49,6 +60,9 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    init: (state) => {
+      state.isInit = true;
+    },
     updateUser: (
       state,
       action: PayloadAction<{ name: string; email: string }>
@@ -66,34 +80,21 @@ export const userSlice = createSlice({
     // Получение пользователя
     builder.addCase(getUserApiThunk.pending, (state) => {
       state.isLoading = true;
-      state.isLogout = false;
-      state.error = null;
-      state.user = {
-        email: '',
-        name: ''
-      };
     });
     builder.addCase(getUserApiThunk.rejected, (state, action) => {
+      state.isInit = true;
       state.isLoading = false;
-      state.isLogout = false;
       state.error = action.error;
-      state.user = {
-        email: '',
-        name: ''
-      };
     });
     builder.addCase(getUserApiThunk.fulfilled, (state, action) => {
+      state.isInit = true;
       state.isLoading = false;
-      state.isLogout = false;
-      state.error = null;
       state.user = action.payload.user;
     });
 
     // Обновление пользователя
     builder.addCase(updateUserApiThunk.pending, (state) => {
       state.isLoading = true;
-      state.isLogout = false;
-      state.error = null;
     });
     builder.addCase(updateUserApiThunk.rejected, (state, action) => {
       state.isLoading = false;
@@ -104,15 +105,13 @@ export const userSlice = createSlice({
       state.isLoading = false;
       state.isLogout = false;
       state.error = null;
-      state.user!.name = action.payload.user.name;
-      state.user!.email = action.payload.user.email;
+      state.user.name = action.payload.user.name;
+      state.user.email = action.payload.user.email;
     });
 
     //Выход пользователя
     builder.addCase(logoutApiThunk.pending, (state) => {
       state.isLoading = true;
-      state.isLogout = false;
-      state.error = null;
     });
     builder.addCase(logoutApiThunk.rejected, (state, action) => {
       state.isLoading = false;
@@ -120,6 +119,7 @@ export const userSlice = createSlice({
       state.error = action.error;
     });
     builder.addCase(logoutApiThunk.fulfilled, (state, action) => {
+      state.isInit = false;
       state.isLoading = false;
       state.isLogout = true;
       state.error = null;
@@ -131,7 +131,7 @@ export const userSlice = createSlice({
   }
 });
 
-export const { updateUser } = userSlice.actions;
+export const { init, updateUser } = userSlice.actions;
 export const { selectUser } = userSlice.selectors;
 
 export default userSlice.reducer;
