@@ -20,8 +20,25 @@ import {
   ProtectedRoute
 } from '@components';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { RootState, useDispatch, useSelector } from '../../services/store';
+import { getUserApiThunk, init } from '../../services/slices/userSlice';
+import { useEffect } from 'react';
+import { getCookie } from '../../utils/cookie';
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  const { ...props } = useSelector((store: RootState) => store.user);
+
+  useEffect(() => {
+    const token = getCookie('accessToken');
+    if (token) {
+      dispatch(getUserApiThunk());
+    } else {
+      dispatch(init());
+    }
+  }, []);
+
   const location = useLocation();
   const backgroundLocation = location.state?.backgroundLocation;
 
@@ -45,7 +62,7 @@ const App = () => {
         <Route
           path='/login'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Login />
             </ProtectedRoute>
           }

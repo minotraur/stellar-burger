@@ -19,7 +19,6 @@ export const Profile: FC = () => {
   });
 
   useEffect(() => {
-    dispatch(getUserApiThunk());
     setFormValue((prevState) => ({
       ...prevState,
       name: user?.name || '',
