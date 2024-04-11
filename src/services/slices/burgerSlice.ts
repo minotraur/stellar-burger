@@ -20,6 +20,11 @@ const burgerSlice = createSlice({
     },
     addIngredient: (state, action: PayloadAction<TIngredient>) => {
       state.ingredients.push(action.payload);
+    },
+    removeIngredient: (state, action: PayloadAction<TIngredient>) => {
+      state.ingredients = state.ingredients.filter(
+        (ingredient) => ingredient._id !== action.payload._id
+      );
     }
   },
   selectors: {
@@ -28,7 +33,7 @@ const burgerSlice = createSlice({
   }
 });
 
-export const { addBun, addIngredient } = burgerSlice.actions;
+export const { addBun, addIngredient, removeIngredient } = burgerSlice.actions;
 export const { getBun, getBurgerIngredients } = burgerSlice.selectors;
 
 export default burgerSlice.reducer;

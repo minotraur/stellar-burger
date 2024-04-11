@@ -7,9 +7,14 @@ import {
   getBurgerIngredients
 } from '../../services/slices/burgerSlice';
 import { orderBurger } from '../../services/slices/ordersSlice';
+import { selectUser } from '../../services/slices/userSlice';
+import { Navigate, useLocation } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
+
+  const user = useSelector(selectUser); //userDataSelector селектор получения пользователя из store
+  const location = useLocation();
 
   const bun = useSelector<TIngredient | null>(getBun);
   const burgerIngredients = useSelector(getBurgerIngredients);
@@ -34,6 +39,10 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+
+    if (user.email === '' && user.name === '') {
+      return <Navigate replace to='/login' state={{ from: location }} />;
+    }
 
     dispatch(
       orderBurger([
