@@ -19,16 +19,15 @@ import {
   OrderInfo,
   ProtectedRoute
 } from '@components';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { RootState, useDispatch, useSelector } from '../../services/store';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
 import { getUserApiThunk, init } from '../../services/slices/userSlice';
 import { useEffect } from 'react';
 import { getCookie } from '../../utils/cookie';
 
 const App = () => {
   const dispatch = useDispatch();
-
-  const { ...props } = useSelector((store: RootState) => store.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = getCookie('accessToken');
@@ -40,7 +39,10 @@ const App = () => {
   }, []);
 
   const location = useLocation();
-  const backgroundLocation = location.state?.backgroundLocation;
+  const backgroundLocation = location.state?.background;
+  const onClose = () => {
+    navigate(-1);
+  };
 
   return (
     <div className={styles.app}>
@@ -49,15 +51,8 @@ const App = () => {
         <Route path='*' element={<NotFound404 />} />
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        <Route path='/feed/:number' element={<Feed />} />
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal title={''} onClose={() => {}}>
-              <IngredientDetails />
-            </Modal>
-          }
-        />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
         <Route
           path='/login'
@@ -104,14 +99,24 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='orders'
-            element={
-              <ProtectedRoute>
-                <ProfileOrders />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='orders'>
+            <Route
+              index
+              element={
+                <ProtectedRoute>
+                  <ProfileOrders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path=':number'
+              element={
+                <ProtectedRoute>
+                  <OrderInfo />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
         </Route>
       </Routes>
 
@@ -120,8 +125,8 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title={''} onClose={() => {}}>
-                <Feed />
+              <Modal title={'Подробнее о заказе'} onClose={onClose}>
+                <OrderInfo />
               </Modal>
             }
           />
@@ -129,7 +134,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title={''} onClose={() => {}}>
+              <Modal title={'Подробнее об ингридиенте'} onClose={onClose}>
                 <IngredientDetails />
               </Modal>
             }
@@ -139,7 +144,7 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <Modal title={''} onClose={() => {}}>
+                <Modal title={'Подробнее о заказе'} onClose={onClose}>
                   <OrderInfo />
                 </Modal>
               </ProtectedRoute>
