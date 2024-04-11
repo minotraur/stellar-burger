@@ -6,29 +6,22 @@ import {
 } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
-interface INewOrder {
-  order: TOrder;
-  name: string;
-}
-
 type TOrdersState = {
   isLoading: boolean;
-  orders: TOrder[];
   error: SerializedError | null;
-  newOrder: INewOrder | null;
-  order: TOrder[];
+  userOrders: TOrder[];
+  orderById: TOrder[];
 };
 
 const initialState: TOrdersState = {
   isLoading: true,
   error: null,
-  orders: [],
-  newOrder: null,
-  order: []
+  userOrders: [],
+  orderById: []
 };
 
-export const fetchOrders = createAsyncThunk(
-  'order/getOrders',
+export const fetchUserOrders = createAsyncThunk(
+  'order/getUserOrders',
   async () => (await getOrdersApi()) as TOrder[]
 );
 
@@ -48,22 +41,21 @@ const orderSlice = createSlice({
   reducers: {},
   selectors: {
     getIsLoading: (sliceState) => sliceState.isLoading,
-    getOrders: (sliceState) => sliceState.orders,
-    getOrder: (sliceState) => sliceState.order,
-    getNewOrder: (sliceState) => sliceState.newOrder
+    getUserOrders: (sliceState) => sliceState.userOrders,
+    getOrderById: (sliceState) => sliceState.orderById
   },
   extraReducers: (builder) => {
     // Получение личных заказов
-    builder.addCase(fetchOrders.pending, (state) => {
+    builder.addCase(fetchUserOrders.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(fetchOrders.rejected, (state, action) => {
+    builder.addCase(fetchUserOrders.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });
-    builder.addCase(fetchOrders.fulfilled, (state, action) => {
+    builder.addCase(fetchUserOrders.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.order = action.payload;
+      state.userOrders = action.payload;
     });
 
     // Заказ бургера
@@ -74,9 +66,8 @@ const orderSlice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-    builder.addCase(orderBurger.fulfilled, (state, action) => {
+    builder.addCase(orderBurger.fulfilled, (state) => {
       state.isLoading = false;
-      state.newOrder = action.payload;
     });
 
     // Получение заказа по id
@@ -89,12 +80,12 @@ const orderSlice = createSlice({
     });
     builder.addCase(fetchOrderByNumber.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.order = action.payload.orders;
+      state.orderById = action.payload.orders;
     });
   }
 });
 
-export const { getOrders, getIsLoading, getNewOrder, getOrder } =
+export const { getIsLoading, getUserOrders, getOrderById } =
   orderSlice.selectors;
 
 export default orderSlice.reducer;
