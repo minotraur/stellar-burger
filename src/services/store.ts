@@ -11,13 +11,15 @@ import feedSliceReducer from './slices/feedsSlice';
 import userSliceReducer from './slices/userSlice';
 import burgerSliceReducer from './slices/burgerSlice';
 import authSliceReducer from './slices/authSlice';
+import orderSliceReducer from './slices/ordersSlice';
 
 const rootReducer = {
   ingredient: ingredientSliceReducer,
   feed: feedSliceReducer,
   user: userSliceReducer,
   burger: burgerSliceReducer,
-  auth: authSliceReducer
+  auth: authSliceReducer,
+  order: orderSliceReducer
 };
 
 const store = configureStore({

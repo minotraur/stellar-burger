@@ -34,16 +34,12 @@ export const fetchOrders = createAsyncThunk(
 
 export const orderBurger = createAsyncThunk(
   'order/orderBurger',
-  async (data: string[]) => {
-    return await orderBurgerApi(data);
-  }
+  async (data: string[]) => await orderBurgerApi(data)
 );
 
 export const fetchOrderByNumber = createAsyncThunk(
-  'order/orderByNumber',
-  async (number: number) => {
-    return await getOrderByNumberApi(number);
-  }
+  'order/getOrderByNumber',
+  async (number: number) => await getOrderByNumberApi(number)
 );
 
 const orderSlice = createSlice({
@@ -54,7 +50,7 @@ const orderSlice = createSlice({
     getIsLoading: (sliceState) => sliceState.isLoading,
     getOrders: (sliceState) => sliceState.orders,
     getOrder: (sliceState) => sliceState.order,
-    getNewOrder: (sliceState) => sliceState.order
+    getNewOrder: (sliceState) => sliceState.newOrder
   },
   extraReducers: (builder) => {
     // Получение личных заказов
