@@ -1,44 +1,104 @@
-// import { getOrdersApi } from '@api';
-// import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-// import { TOrder } from '@utils-types';
+import { getOrderByNumberApi, getOrdersApi, orderBurgerApi } from '@api';
+import {
+  SerializedError,
+  createAsyncThunk,
+  createSlice
+} from '@reduxjs/toolkit';
+import { TOrder } from '@utils-types';
 
-// type TOrdersState = {
-//   orders: TOrder[];
-//   isLoading: boolean;
-// };
+interface INewOrder {
+  order: TOrder;
+  name: string;
+}
 
-// const initialState: TOrdersState = {
-//   orders: [],
-//   isLoading: true
-// };
+type TOrdersState = {
+  isLoading: boolean;
+  orders: TOrder[];
+  error: SerializedError | null;
+  newOrder: INewOrder | null;
+  order: TOrder[];
+};
 
-// export const fetchOrders = createAsyncThunk('getOrders', async () => {
-//   const ingredients: any = await getOrdersApi();
-//   return ingredients;
-// });
+const initialState: TOrdersState = {
+  isLoading: true,
+  error: null,
+  orders: [],
+  newOrder: null,
+  order: []
+};
 
-// const orderSlice = createSlice({
-//   name: 'order',
-//   initialState,
-//   reducers: {},
-//   selectors: {
-//     getOrders: (sliceState) => sliceState.orders,
-//     getIsLoading: (sliceState) => sliceState.isLoading
-//   },
-//   extraReducers: (builder) => {
-//     builder.addCase(fetchOrders.pending, (state) => {
-//       state.isLoading = true;
-//     });
-//     builder.addCase(fetchOrders.fulfilled, (state, action) => {
-//       state.isLoading = false;
-//       state.orders = action.payload;
-//     });
-//     builder.addCase(fetchOrders.rejected, (state) => {
-//       state.isLoading = false;
-//     });
-//   }
-// });
+export const fetchOrders = createAsyncThunk(
+  'order/getOrders',
+  async () => (await getOrdersApi()) as TOrder[]
+);
 
-// export const { getOrders, getIsLoading } = orderSlice.selectors;
+export const orderBurger = createAsyncThunk(
+  'order/orderBurger',
+  async (data: string[]) => {
+    return await orderBurgerApi(data);
+  }
+);
 
-// export default orderSlice.reducer;
+export const fetchOrderByNumber = createAsyncThunk(
+  'order/orderByNumber',
+  async (number: number) => {
+    return await getOrderByNumberApi(number);
+  }
+);
+
+const orderSlice = createSlice({
+  name: 'order',
+  initialState,
+  reducers: {},
+  selectors: {
+    getIsLoading: (sliceState) => sliceState.isLoading,
+    getOrders: (sliceState) => sliceState.orders,
+    getOrder: (sliceState) => sliceState.order,
+    getNewOrder: (sliceState) => sliceState.order
+  },
+  extraReducers: (builder) => {
+    // Получение личных заказов
+    builder.addCase(fetchOrders.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchOrders.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(fetchOrders.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.order = action.payload;
+    });
+
+    // Заказ бургера
+    builder.addCase(orderBurger.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(orderBurger.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(orderBurger.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.newOrder = action.payload;
+    });
+
+    // Получение заказа по id
+    builder.addCase(fetchOrderByNumber.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchOrderByNumber.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(fetchOrderByNumber.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.order = action.payload.orders;
+    });
+  }
+});
+
+export const { getOrders, getIsLoading, getNewOrder, getOrder } =
+  orderSlice.selectors;
+
+export default orderSlice.reducer;
