@@ -25,6 +25,10 @@ const burgerSlice = createSlice({
       state.ingredients = state.ingredients.filter(
         (ingredient) => ingredient._id !== action.payload._id
       );
+    },
+    cleanAll: (state) => {
+      state.bun = null;
+      state.ingredients = [];
     }
   },
   selectors: {
@@ -33,7 +37,8 @@ const burgerSlice = createSlice({
   }
 });
 
-export const { addBun, addIngredient, removeIngredient } = burgerSlice.actions;
+export const { addBun, addIngredient, removeIngredient, cleanAll } =
+  burgerSlice.actions;
 export const { getBun, getBurgerIngredients } = burgerSlice.selectors;
 
 export default burgerSlice.reducer;

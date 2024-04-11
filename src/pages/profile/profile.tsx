@@ -1,7 +1,6 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import {
-  getUserApiThunk,
   selectUser,
   updateUserApiThunk
 } from '../../services/slices/userSlice';

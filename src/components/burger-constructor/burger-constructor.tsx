@@ -3,23 +3,30 @@ import { TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from '../../services/store';
 import {
+  cleanAll,
   getBun,
   getBurgerIngredients
 } from '../../services/slices/burgerSlice';
-import { orderBurger } from '../../services/slices/ordersSlice';
+import {
+  getNewOrder,
+  getOrderRequest,
+  orderBurger
+} from '../../services/slices/ordersSlice';
 import { selectUser } from '../../services/slices/userSlice';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-
-  const user = useSelector(selectUser); //userDataSelector селектор получения пользователя из store
-  const location = useLocation();
+  const user = useSelector(selectUser);
 
   const bun = useSelector<TIngredient | null>(getBun);
   const burgerIngredients = useSelector(getBurgerIngredients);
 
+  const order = useSelector(getNewOrder);
+  const orderRequest = useSelector(getOrderRequest);
+
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const constructorItems = {
     bun: {
@@ -33,15 +40,15 @@ export const BurgerConstructor: FC = () => {
     ingredients: burgerIngredients
   };
 
-  const orderRequest = false;
-
-  const orderModalData = null;
+  const orderModalData = order;
 
   const onOrderClick = () => {
+    console.log(user);
+
     if (!constructorItems.bun || orderRequest) return;
 
     if (user.email === '' && user.name === '') {
-      return <Navigate replace to='/login' state={{ from: location }} />;
+      navigate('/login');
     }
 
     dispatch(
@@ -52,7 +59,9 @@ export const BurgerConstructor: FC = () => {
       ])
     );
   };
-  const closeOrderModal = () => {};
+  const closeOrderModal = () => {
+    dispatch(cleanAll());
+  };
 
   const price = useMemo(() => {
     const bunPrice = constructorItems.bun ? constructorItems.bun.price! * 2 : 0;

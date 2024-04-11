@@ -63,32 +63,11 @@ const App = () => {
           }
         />
 
-        <Route
-          path='/register'
-          element={
-            <ProtectedRoute>
-              <Register />
-            </ProtectedRoute>
-          }
-        />
+        <Route path='/register' element={<Register />} />
 
-        <Route
-          path='/forgot-password'
-          element={
-            <ProtectedRoute>
-              <ForgotPassword />
-            </ProtectedRoute>
-          }
-        />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
 
-        <Route
-          path='/reset-password'
-          element={
-            <ProtectedRoute>
-              <ResetPassword />
-            </ProtectedRoute>
-          }
-        />
+        <Route path='/reset-password' element={<ResetPassword />} />
 
         <Route path='/profile'>
           <Route
