@@ -8,10 +8,7 @@ import {
   getOrderById
 } from '../../services/slices/ordersSlice';
 import { useParams } from 'react-router-dom';
-import {
-  fetchIngredients,
-  getIngredients
-} from '../../services/slices/ingredientsSlice';
+import { getIngredients } from '../../services/slices/ingredientsSlice';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
@@ -25,7 +22,6 @@ export const OrderInfo: FC = () => {
   useEffect(() => {
     if (!orderId) return;
     dispatch(fetchOrderByNumber(+orderId));
-    dispatch(fetchIngredients());
   }, []);
 
   /* Готовим данные для отображения */

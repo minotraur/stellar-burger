@@ -24,6 +24,7 @@ import { useDispatch } from '../../services/store';
 import { getUserApiThunk, init } from '../../services/slices/userSlice';
 import { useEffect } from 'react';
 import { getCookie } from '../../utils/cookie';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const App = () => {
 
   useEffect(() => {
     const token = getCookie('accessToken');
+    dispatch(fetchIngredients());
     if (token) {
       dispatch(getUserApiThunk());
     } else {
@@ -65,9 +67,23 @@ const App = () => {
 
         <Route path='/register' element={<Register />} />
 
-        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route
+          path='/forgot-password'
+          element={
+            <ProtectedRoute>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/reset-password' element={<ResetPassword />} />
+        <Route
+          path='/reset-password'
+          element={
+            <ProtectedRoute>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path='/profile'>
           <Route

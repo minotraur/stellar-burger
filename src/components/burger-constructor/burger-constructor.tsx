@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 export const BurgerConstructor: FC = () => {
   const user = useSelector(selectUser);
 
-  const bun = useSelector<TIngredient | null>(getBun);
+  const bun = useSelector(getBun);
   const burgerIngredients = useSelector(getBurgerIngredients);
 
   const order = useSelector(getNewOrder);
@@ -43,8 +43,6 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = order;
 
   const onOrderClick = () => {
-    console.log(user);
-
     if (!constructorItems.bun || orderRequest) return;
 
     if (user.email === '' && user.name === '') {

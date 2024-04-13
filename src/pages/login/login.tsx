@@ -1,10 +1,14 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 
 import { useNavigate } from 'react-router-dom';
 import { setCookie } from '../../utils/cookie';
-import { loginUserThunk } from '../../services/slices/authSlice';
+import {
+  isAuthCheckedSelector,
+  loginUserThunk
+} from '../../services/slices/authSlice';
+import { selectUser } from '../../services/slices/userSlice';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
@@ -20,7 +24,7 @@ export const Login: FC = () => {
       .then((response) => {
         setCookie('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
-        navigate('/profile');
+        navigate('/');
       });
   };
 

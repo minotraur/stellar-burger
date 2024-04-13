@@ -14,10 +14,7 @@ const initialState: TIngredientsState = {
 
 export const fetchIngredients = createAsyncThunk(
   'ingredients/getIngredients',
-  async () => {
-    const ingredients: any = await getIngredientsApi();
-    return ingredients;
-  }
+  getIngredientsApi
 );
 
 const ingredientSlice = createSlice({
