@@ -13,6 +13,7 @@ type TOrdersState = {
   orderById: TOrder[];
   order: TOrder | null;
   orderRequest: boolean;
+  orderModalData: TOrder | null;
 };
 
 const initialState: TOrdersState = {
@@ -21,7 +22,8 @@ const initialState: TOrdersState = {
   userOrders: [],
   orderById: [],
   order: null,
-  orderRequest: false
+  orderRequest: false,
+  orderModalData: null
 };
 
 export const fetchUserOrders = createAsyncThunk(
@@ -42,13 +44,18 @@ export const fetchOrderByNumber = createAsyncThunk(
 const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrderModalData: (state) => {
+      state.orderModalData = null;
+    }
+  },
   selectors: {
     getIsLoading: (sliceState) => sliceState.isLoading,
     getUserOrders: (sliceState) => sliceState.userOrders,
     getOrderById: (sliceState) => sliceState.orderById,
     getNewOrder: (sliceState) => sliceState.order,
-    getOrderRequest: (sliceState) => sliceState.orderRequest
+    getOrderRequest: (sliceState) => sliceState.orderRequest,
+    getOrderModalData: (sliceState) => sliceState.orderModalData
   },
   extraReducers: (builder) => {
     // Получение личных заказов
@@ -67,14 +74,18 @@ const orderSlice = createSlice({
     // Заказ бургера
     builder.addCase(orderBurger.pending, (state) => {
       state.isLoading = true;
+      state.orderRequest = true;
     });
     builder.addCase(orderBurger.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
+      state.orderRequest = false;
     });
     builder.addCase(orderBurger.fulfilled, (state, action) => {
       state.isLoading = false;
       state.order = action.payload.order;
+      state.orderRequest = false;
+      state.orderModalData = action.payload.order;
     });
 
     // Получение заказа по id
@@ -100,7 +111,10 @@ export const {
   getUserOrders,
   getOrderById,
   getNewOrder,
-  getOrderRequest
+  getOrderRequest,
+  getOrderModalData
 } = orderSlice.selectors;
+
+export const { clearOrderModalData } = orderSlice.actions;
 
 export default orderSlice.reducer;

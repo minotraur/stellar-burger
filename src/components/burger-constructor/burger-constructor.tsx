@@ -8,7 +8,9 @@ import {
   getBurgerIngredients
 } from '../../services/slices/burgerSlice';
 import {
+  clearOrderModalData,
   getNewOrder,
+  getOrderModalData,
   getOrderRequest,
   orderBurger
 } from '../../services/slices/ordersSlice';
@@ -23,6 +25,7 @@ export const BurgerConstructor: FC = () => {
 
   const order = useSelector(getNewOrder);
   const orderRequest = useSelector(getOrderRequest);
+  const orderModalData = useSelector(getOrderModalData);
 
   const dispatch = useDispatch();
 
@@ -39,8 +42,6 @@ export const BurgerConstructor: FC = () => {
     },
     ingredients: burgerIngredients
   };
-
-  const orderModalData = order;
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
@@ -59,6 +60,7 @@ export const BurgerConstructor: FC = () => {
   };
   const closeOrderModal = () => {
     dispatch(cleanAll());
+    dispatch(clearOrderModalData());
   };
 
   const price = useMemo(() => {

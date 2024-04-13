@@ -14,6 +14,7 @@ import styles from './app.module.css';
 
 import {
   AppHeader,
+  BurgerConstructor,
   IngredientDetails,
   Modal,
   OrderInfo,
