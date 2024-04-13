@@ -45,7 +45,7 @@ export const BurgerConstructor: FC = () => {
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
 
-    if (user.email === '' && user.name === '') {
+    if (!user) {
       navigate('/login');
     }
 

@@ -10,7 +10,6 @@ import ingredientSliceReducer from './slices/ingredientsSlice';
 import feedSliceReducer from './slices/feedsSlice';
 import userSliceReducer from './slices/userSlice';
 import burgerSliceReducer from './slices/burgerSlice';
-import authSliceReducer from './slices/authSlice';
 import orderSliceReducer from './slices/ordersSlice';
 
 const rootReducer = {
@@ -18,7 +17,6 @@ const rootReducer = {
   feed: feedSliceReducer,
   user: userSliceReducer,
   burger: burgerSliceReducer,
-  auth: authSliceReducer,
   order: orderSliceReducer
 };
 
