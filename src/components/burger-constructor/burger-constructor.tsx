@@ -9,7 +9,6 @@ import {
 } from '../../services/slices/burgerSlice';
 import {
   clearOrderModalData,
-  getNewOrder,
   getOrderModalData,
   getOrderRequest,
   orderBurger
@@ -23,7 +22,6 @@ export const BurgerConstructor: FC = () => {
   const bun = useSelector(getBun);
   const burgerIngredients = useSelector(getBurgerIngredients);
 
-  const order = useSelector(getNewOrder);
   const orderRequest = useSelector(getOrderRequest);
   const orderModalData = useSelector(getOrderModalData);
 
@@ -47,7 +45,7 @@ export const BurgerConstructor: FC = () => {
     if (!constructorItems.bun || orderRequest) return;
 
     if (!user) {
-      navigate('/login');
+      return navigate('/login');
     }
 
     dispatch(
