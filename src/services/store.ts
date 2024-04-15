@@ -9,11 +9,15 @@ import {
 import ingredientSliceReducer from './slices/ingredientsSlice';
 import feedSliceReducer from './slices/feedsSlice';
 import userSliceReducer from './slices/userSlice';
+import burgerSliceReducer from './slices/burgerSlice';
+import orderSliceReducer from './slices/ordersSlice';
 
 const rootReducer = {
   ingredient: ingredientSliceReducer,
   feed: feedSliceReducer,
-  user: userSliceReducer
+  user: userSliceReducer,
+  burger: burgerSliceReducer,
+  order: orderSliceReducer
 };
 
 const store = configureStore({

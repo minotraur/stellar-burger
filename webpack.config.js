@@ -32,7 +32,10 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true
+              modules: {
+                mode: 'local',
+                localIdentName: '[name]__[local]__[hash:base64:5]'
+              }
             }
           }
         ]
@@ -85,6 +88,7 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
     filename: 'bundle.js'
   },
+  devtool: 'eval-source-map',
   devServer: {
     static: path.join(__dirname, './dist'),
     compress: true,
