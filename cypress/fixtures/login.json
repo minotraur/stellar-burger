@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTE3ZDM0OTdlZGUwMDAxZDA2NDk1YyIsImlhdCI6MTcxOTA3Mzg5NiwiZXhwIjoxNzE5MDc1MDk2fQ.X8mht-mwZp5k3sadUhDGLiEeP4F4GQkwnEPnuRwyAtg",
+  "refreshToken": "a7c3720531ae2f30a59484ea6e3955a6f4c1d2160c0c25c232a64dab3cdb6ebc199a2f57e90fc60b",
+  "user": {
+    "email": "fedotov85050@gmail.com",
+    "name": "ВладF"
+  }
+}
