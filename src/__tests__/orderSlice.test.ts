@@ -4,7 +4,8 @@ import reducer, {
   clearOrderModalData,
   fetchOrderByNumber,
   fetchUserOrders,
-  orderBurger
+  orderBurger,
+  initialState
 } from '../services/slices/ordersSlice';
 
 jest.mock('@api', () => ({
@@ -14,16 +15,6 @@ jest.mock('@api', () => ({
 }));
 
 describe('orderSlice', () => {
-  const initialState = {
-    isLoading: true,
-    error: null,
-    userOrders: [] as TOrder[],
-    orderById: [] as TOrder[],
-    order: null as TOrder | null,
-    orderRequest: false,
-    orderModalData: null as TOrder | null
-  };
-
   it('should handle initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });

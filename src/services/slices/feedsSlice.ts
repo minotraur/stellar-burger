@@ -7,7 +7,7 @@ type TFeedsState = {
   feedInfo: TOrdersData;
 };
 
-const initialState: TFeedsState = {
+export const initialState: TFeedsState = {
   isLoading: true,
   feedInfo: {
     orders: [],

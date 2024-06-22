@@ -1,17 +1,19 @@
+import { TEST_URL } from 'cypress/testVariables';
+
 describe('Burger Builder', () => {
   before(() => {
     // Запуск тестовой среды и переход на нужную страницу
-    cy.visit('http://localhost:4000'); // Измените URL на нужный вам
+    cy.visit(TEST_URL);
   });
 
   it('should load ingredients and add an ingredient to the constructor', () => {
     // Дождаться загрузки ингредиентов
     cy.get('[data-cy=ingredient]').should('have.length.greaterThan', 0);
 
-    cy.get('.burger-ingredient-module__container__szzp3')
+    cy.get('[data-cy=ingredient]')
       .first()
       .within(() => {
-        cy.get('.burger-ingredient-module__addButton__HR_H4').first().click();
+        cy.get('button').click();
       });
 
     cy.get('[data-cy=constructor] [data-cy=constructor-item]').should(

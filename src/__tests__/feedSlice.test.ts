@@ -1,21 +1,15 @@
 import { getFeedsApi } from '@api';
 import { TOrdersData } from '@utils-types';
-import reducer, { fetchFeeds } from '../services/slices/feedsSlice';
+import reducer, {
+  fetchFeeds,
+  initialState
+} from '../services/slices/feedsSlice';
 
 jest.mock('@api', () => ({
   getFeedsApi: jest.fn()
 }));
 
 describe('feedSlice', () => {
-  const initialState = {
-    isLoading: true,
-    feedInfo: {
-      orders: [],
-      total: 0,
-      totalToday: 0
-    }
-  };
-
   it('should handle initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });

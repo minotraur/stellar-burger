@@ -16,7 +16,8 @@ import reducer, {
   logoutApiThunk,
   registerUserThunk,
   resetPasswordApiThunk,
-  updateUserApiThunk
+  updateUserApiThunk,
+  initialState
 } from '../services/slices/userSlice';
 
 jest.mock('@api', () => ({
@@ -30,16 +31,6 @@ jest.mock('@api', () => ({
 }));
 
 describe('userSlice', () => {
-  const initialState = {
-    isInit: false,
-    isLoading: false,
-    isLogout: false,
-    error: null,
-    user: null,
-    isAuthChecked: false,
-    isAuthenticated: false
-  };
-
   const mockUser: TUser = {
     email: 'test@example.com',
     name: 'Test User'

@@ -1,7 +1,9 @@
+import { TEST_URL } from 'cypress/testVariables';
+
 describe('Burger Builder', () => {
   before(() => {
     // Запуск тестовой среды и переход на нужную страницу
-    cy.visit('http://localhost:4000'); // Измените URL на нужный вам
+    cy.visit(TEST_URL); // Измените URL на нужный вам
   });
 
   beforeEach(() => {
@@ -30,10 +32,10 @@ describe('Burger Builder', () => {
     // Дождаться загрузки ингредиентов
     cy.get('[data-cy=ingredient]').should('have.length.greaterThan', 0);
 
-    cy.get('.burger-ingredient-module__container__szzp3')
+    cy.get('[data-cy=ingredient]')
       .first()
       .within(() => {
-        cy.get('.burger-ingredient-module__addButton__HR_H4').first().click();
+        cy.get('button').first().click();
       });
 
     cy.get('[data-cy=make-order]')
@@ -42,14 +44,14 @@ describe('Burger Builder', () => {
         cy.intercept('POST', '/orders', { fixture: 'order' });
       });
 
-    cy.get('.modal-module__modal__xqsNT').should('be.visible');
+    cy.get('[data-cy=modal]').should('be.visible');
 
     cy.wait(17000);
 
     // Закрываем модальное окно
-    cy.get('.modal-module__button__Z7mUF').click();
+    cy.get('[data-cy=close-modal]').click();
 
     // Проверяем, что модальное окно закрылось
-    cy.get('.modal-module__modal__xqsNT').should('not.exist');
+    cy.get('[data-cy=modal]').should('not.exist');
   });
 });

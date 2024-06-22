@@ -1,6 +1,7 @@
 import { TIngredient, TConstructorIngredient } from '@utils-types';
 import {
   addIngredient,
+  initialState,
   removeIngredient
 } from '../services/slices/burgerSlice';
 import burgerSliceReducer from '../services/slices/burgerSlice';
@@ -11,11 +12,6 @@ jest.mock('uuid', () => ({
 }));
 
 describe('burgerReducer', () => {
-  const initialState = {
-    bun: null,
-    ingredients: []
-  };
-
   const ingredient: TIngredient = {
     _id: '1',
     name: 'Bun',

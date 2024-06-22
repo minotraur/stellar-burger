@@ -1,17 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getIngredientsApi } from '@api';
-import reducer, { fetchIngredients } from '../services/slices/ingredientsSlice';
+import reducer, {
+  fetchIngredients,
+  initialState
+} from '../services/slices/ingredientsSlice';
 
 jest.mock('@api', () => ({
   getIngredientsApi: jest.fn()
 }));
 
 describe('ingredientSlice', () => {
-  const initialState = {
-    ingredients: [],
-    isLoading: true
-  };
-
   it('should handle initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });

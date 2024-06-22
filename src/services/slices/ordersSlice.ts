@@ -16,7 +16,7 @@ type TOrdersState = {
   orderModalData: TOrder | null;
 };
 
-const initialState: TOrdersState = {
+export const initialState: TOrdersState = {
   isLoading: true,
   error: null,
   userOrders: [],
